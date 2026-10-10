@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# exceções de env
+!.env.example
+
+# logs locais
+.dev.log
+
+# maestri (config local do canvas)
+.maestri/
+
+# evidências locais do QA (screenshots)
+docs/qa/img/
