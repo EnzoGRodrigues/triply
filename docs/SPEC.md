@@ -199,3 +199,5 @@ Os dados ficam em `src/db/seed-data.ts` (UUIDs fixos). No modo memória são car
 - realizadas: **Espanha** (Madrid; hospedagem "Madrid Downtown Hostel"; atividades "Museu Nacional Centro de Arte Reina Sofía"; EUR 6,27; gastos R$ 16.000,27; 4 estrelas; família; avião; experiência do Figma) e **França** (Paris);
 - planejadas (datas futuras, 2027): **Maragogi - Alagoas**, **Indonésia** (Bali), **Barra Grande - Piauí**, **Natal - Rio Grande do Norte**, **México** (Tulum, hospedagem "Hostal Mulut Tulum", atividades "Mergulhar em um cenote e passear por Tulum").
 Capas com URLs do Wikimedia.
+
+Contas do grupo, também fixas e com a senha `triply123`: **Tabata**, **Pietra**, **Vitor**, **Wesley** e **Adilson** (`<nome>@triply.app`). Cada uma tem a sua própria cópia das 7 viagens acima, com ids derivados de forma determinística (`deterministicUuid`), então o que uma conta edita não aparece nas outras.

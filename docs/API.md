@@ -21,7 +21,7 @@ A API não depende do banco usado: os serviços falam só com repositórios (`sr
 
 | `DB_DRIVER` | Banco | Observações |
 |---|---|---|
-| `memory` (padrão, quando ausente) | **Em memória** (parte 1) | Não exige `DATABASE_URL`. Nasce com a conta demo e as 7 viagens (ids fixos). Os dados voltam ao estado inicial quando o servidor reinicia — e, na Vercel, também a cada novo deploy, *cold start* ou outra instância. |
+| `memory` (padrão, quando ausente) | **Em memória** (parte 1) | Não exige `DATABASE_URL`. Nasce com as 6 contas demo, cada uma com as suas 7 viagens (ids fixos). Os dados voltam ao estado inicial quando o servidor reinicia — e, na Vercel, também a cada novo deploy, *cold start* ou outra instância. |
 | `postgres` | PostgreSQL + Drizzle (parte 2) | Exige `DATABASE_URL`; tabelas criadas com `npm run db:migrate`, dados de demonstração com `npm run db:seed`. |
 
 Ao subir, o log indica o modo ativo: `[db] banco em memória — os dados voltam ao estado inicial quando o servidor reinicia` ou `[db] PostgreSQL (...) — os dados são persistentes`.
@@ -412,10 +412,10 @@ Atribuições exibidas na interface: "Dados meteorológicos: Open-Meteo (CC BY 4
 # Parte 1 (padrão): banco em memória — não há o que migrar nem semear; basta `npm run dev`.
 # Modo Postgres (DB_DRIVER=postgres + DATABASE_URL):
 npm run db:migrate   # aplica as migrações (drizzle/)
-npm run db:seed      # recria a conta demo (idempotente)
+npm run db:seed      # recria as 6 contas demo e as viagens de cada uma (idempotente)
 ```
 
-Conta demo: **`enzo@triply.app` / `triply123`** — 2 viagens realizadas (Espanha, França) e 5 planejadas (Maragogi, México, Indonésia, Barra Grande, Natal).
+Contas demo — todas com a senha **`triply123`**: `enzo@triply.app` (Enzo Rodrigues), `tabata@triply.app`, `pietra@triply.app`, `vitor@triply.app`, `wesley@triply.app` e `adilson@triply.app`. **Cada conta tem a sua própria cópia** das 7 viagens — 2 realizadas (Espanha, França) e 5 planejadas (Maragogi, México, Indonésia, Barra Grande, Natal), com ids fixos (os da conta do Enzo estão em `src/db/seed-data.ts`; os das outras contas são derivados dele de forma determinística). Como toda viagem é do usuário logado, editar, concluir ou apagar numa conta não afeta as demais, e o id de uma viagem de outra conta responde `404`. Esses e-mails já existem: `POST /api/auth/register` com um deles responde `409`.
 
 ```bash
 BASE=http://localhost:3000

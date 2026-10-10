@@ -33,14 +33,20 @@ function createSeededStore(): MemoryStore {
     loginAttempts: [],
   };
 
-  const { user, trips } = buildDemoData();
-  const id = user.id as string;
-  const record: UserRecord = { id, name: user.name, email: user.email, passwordHash: user.passwordHash, createdAt: user.createdAt ?? new Date() };
-  store.users.set(id, record);
-  store.userIdsByEmail.set(record.email, id);
-  for (const trip of trips) {
-    const stored = createStoredTrip(id, trip);
-    store.trips.set(stored.record.id, stored);
+  for (const { user, trips } of buildDemoData()) {
+    const record: UserRecord = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      passwordHash: user.passwordHash,
+      createdAt: user.createdAt ?? new Date(),
+    };
+    store.users.set(record.id, record);
+    store.userIdsByEmail.set(record.email, record.id);
+    for (const trip of trips) {
+      const stored = createStoredTrip(record.id, trip);
+      store.trips.set(stored.record.id, stored);
+    }
   }
   return store;
 }

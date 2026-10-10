@@ -3,28 +3,60 @@
  *  - memória: o store se popula sozinho com isto no primeiro acesso;
  *  - Postgres: `npm run db:seed` grava exatamente os mesmos registros.
  *
- * Os ids são FIXOS de propósito: depois de um *cold start* (ex.: na Vercel) o cookie
- * JWT da conta de demonstração e links como `/viagens/<id>` continuam válidos. As datas de criação
- * também são fixas, para as respostas serem idênticas entre reinícios.
+ * São 6 contas fixas (a do Enzo e as de 5 pessoas do grupo), todas com a mesma senha pública
+ * de demonstração. Cada conta tem a SUA PRÓPRIA CÓPIA das 7 viagens de demonstração: dá para
+ * apresentar por qualquer uma delas, e o que uma edita não aparece para as outras.
+ *
+ * Os ids são FIXOS de propósito: depois de um *cold start* (ex.: na Vercel) o cookie JWT de
+ * cada conta e links como `/viagens/<id>` continuam válidos. Os 6 usuários e as 7 viagens do
+ * Enzo têm ids escritos aqui; as 35 viagens das demais contas têm ids DERIVADOS (ver
+ * `deterministicUuid`), então são sempre os mesmos. As datas de criação também são fixas,
+ * para as respostas serem idênticas entre reinícios.
  */
+
+import { createHash } from "node:crypto";
 
 import type { NewTrip, NewUser } from "./types";
 
 export const DEMO_PASSWORD = "triply123";
 
+/** Conta principal de demonstração (Enzo): seus ids nunca mudam. */
 export const DEMO_USER_ID = "c2ff10ff-7778-4236-97ac-4a588381f0d3";
+
+export interface DemoAccount {
+  id: string;
+  name: string;
+  email: string;
+}
+
+/** As contas de demonstração, todas com `DEMO_PASSWORD`. A primeira é a conta principal. */
+export const DEMO_ACCOUNTS: readonly DemoAccount[] = [
+  { id: DEMO_USER_ID, name: "Enzo Rodrigues", email: "enzo@triply.app" },
+  { id: "52ac024c-75cf-4f01-aa3a-4338d9a3419e", name: "Tabata", email: "tabata@triply.app" },
+  { id: "244d42a5-08f3-4dc4-8888-a13072e58e38", name: "Pietra", email: "pietra@triply.app" },
+  { id: "c2c58085-dd9d-4e67-9bca-da062240d154", name: "Vitor", email: "vitor@triply.app" },
+  { id: "3f98b248-281b-4e11-91f1-8785cc6006c5", name: "Wesley", email: "wesley@triply.app" },
+  { id: "4c96bfb3-dcc8-4db5-baf9-f5beda6945e5", name: "Adilson", email: "adilson@triply.app" },
+];
 
 /** Momento de referência dos registros de demonstração. */
 const SEED_AT = "2026-10-01T12:00:00.000Z";
 
-/** Conta de demonstração (sem o hash da senha — ver `buildDemoData`). */
-export function demoUser(): Omit<NewUser, "passwordHash"> {
-  return {
-    id: DEMO_USER_ID,
-    name: "Enzo Rodrigues",
-    email: "enzo@triply.app",
-    createdAt: new Date(SEED_AT),
-  };
+/** Contas de demonstração (sem o hash da senha — ver `buildDemoData`). */
+export function demoUsers(): Array<Omit<NewUser, "passwordHash"> & { id: string }> {
+  return DEMO_ACCOUNTS.map((account) => ({ ...account, createdAt: new Date(SEED_AT) }));
+}
+
+/**
+ * UUID v4 determinístico: 16 bytes do SHA-256 da semente, com os bits de versão (4) e de
+ * variante (RFC 4122) ajustados — passa em `z.uuid()` como qualquer id gerado ao acaso.
+ */
+function deterministicUuid(seed: string): string {
+  const bytes = createHash("sha256").update(seed).digest().subarray(0, 16);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = bytes.toString("hex");
+  return [hex.slice(0, 8), hex.slice(8, 12), hex.slice(12, 16), hex.slice(16, 20), hex.slice(20)].join("-");
 }
 
 /** Thumbnails de 1280 px validados em docs/research/seed-imagens.md (CC BY / CC BY-SA). */
@@ -46,8 +78,19 @@ const COVERS = {
 
 const external = (url: string): NewTrip["cover"] => ({ kind: "external", url, source: "externa" });
 
-/** As 7 viagens da demonstração: 2 realizadas e 5 planejadas (2027). Objetos novos a cada chamada. */
-export function demoTrips(): NewTrip[] {
+/**
+ * As 7 viagens de demonstração de UMA conta: 2 realizadas e 5 planejadas (2027). Objetos novos a
+ * cada chamada. O Enzo (`DEMO_USER_ID`) fica com os ids escritos abaixo; as outras contas recebem
+ * os mesmos dados com ids derivados do par (usuário, viagem) — fixos, mas distintos entre contas.
+ */
+export function demoTrips(userId: string): NewTrip[] {
+  return tripTemplates().map((trip) => ({
+    ...trip,
+    id: userId === DEMO_USER_ID ? trip.id : deterministicUuid(`triply-demo-trip:${userId}:${trip.id}`),
+  }));
+}
+
+function tripTemplates(): Array<NewTrip & { id: string }> {
   const at = () => new Date(SEED_AT);
   const base = { createdAt: at(), updatedAt: at() };
 

@@ -157,7 +157,7 @@ Ao subir, o log mostra qual banco está ativo:
 [db] banco em memória — os dados voltam ao estado inicial quando o servidor reinicia
 ```
 
-Entre com a [conta de demonstração](#conta-de-demonstração) e use o app normalmente. **Os dados criados (contas, viagens, capas) ficam só na memória do servidor**: reiniciar o `npm run dev` volta tudo ao estado inicial (a conta de demonstração e suas 7 viagens).
+Entre com a [conta de demonstração](#conta-de-demonstração) e use o app normalmente. **Os dados criados (contas, viagens, capas) ficam só na memória do servidor**: reiniciar o `npm run dev` volta tudo ao estado inicial (as 6 contas de demonstração, cada uma com as suas 7 viagens).
 
 ### Modo Postgres (parte 2)
 
@@ -173,7 +173,7 @@ createdb triply
 #   DATABASE_URL=postgres://SEU_USUARIO@localhost:5432/triply
 
 npm run db:migrate   # cria as tabelas
-npm run db:seed      # grava a conta demo (mesmos dados e ids do modo memória)
+npm run db:seed      # grava as 6 contas demo (mesmos dados e ids do modo memória)
 npm run dev          # o log passa a mostrar: [db] PostgreSQL (...) — os dados são persistentes
 ```
 
@@ -193,18 +193,27 @@ Nenhuma das APIs externas exige chave.
 | `npm run docs:check` | Confere a spec OpenAPI contra as rotas e os schemas zod |
 | `npm run db:generate` | *(modo Postgres)* Gera uma migração SQL a partir de `src/db/postgres/schema.ts` |
 | `npm run db:migrate` | *(modo Postgres)* Aplica as migrações em `drizzle/` |
-| `npm run db:seed` | *(modo Postgres)* Recria a conta de demonstração e suas viagens (idempotente) |
+| `npm run db:seed` | *(modo Postgres)* Recria as 6 contas de demonstração e as viagens de cada uma (idempotente) |
 | `npm run db:studio` | *(modo Postgres)* Abre o Drizzle Studio (navegador de dados) |
 
 Os scripts `db:*` só valem para o modo Postgres; no modo memória não há nada para migrar nem semear.
 
 ## Conta de demonstração
 
-| E-mail | Senha |
-|---|---|
-| `enzo@triply.app` | `triply123` |
+São 6 contas fixas, todas com a **mesma senha** (`triply123`, pública — é só demonstração):
 
-A conta tem **2 viagens realizadas** (Espanha e França) e **5 planejadas** (Maragogi, México/Tulum, Indonésia/Bali, Barra Grande e Natal), com as fotos de capa do Wikimedia Commons. Os dados estão em `src/db/seed-data.ts`, com **ids fixos**: no modo memória o banco se popula sozinho no primeiro acesso; no modo Postgres, `npm run db:seed` grava exatamente os mesmos registros. Como os ids não mudam, a sessão da conta de demonstração e links como `/viagens/<id>` continuam válidos depois de um reinício.
+| Nome | E-mail | Senha |
+|---|---|---|
+| Enzo Rodrigues | `enzo@triply.app` | `triply123` |
+| Tabata | `tabata@triply.app` | `triply123` |
+| Pietra | `pietra@triply.app` | `triply123` |
+| Vitor | `vitor@triply.app` | `triply123` |
+| Wesley | `wesley@triply.app` | `triply123` |
+| Adilson | `adilson@triply.app` | `triply123` |
+
+**Cada conta tem a sua própria cópia das 7 viagens de demonstração** — **2 realizadas** (Espanha e França) e **5 planejadas** (Maragogi, México/Tulum, Indonésia/Bali, Barra Grande e Natal), com as fotos de capa do Wikimedia Commons. Assim qualquer pessoa do grupo pode apresentar pela própria conta, e o que uma conta edita, conclui ou apaga **não aparece nas outras** (uma conta nunca enxerga as viagens de outra: acessar o id alheio responde "não encontrada").
+
+Os dados estão em `src/db/seed-data.ts`, com **ids fixos**: no modo memória o banco se popula sozinho no primeiro acesso; no modo Postgres, `npm run db:seed` grava exatamente os mesmos registros. Como os ids não mudam, a sessão de cada conta e links como `/viagens/<id>` continuam válidos depois de um reinício. Os ids das viagens do Enzo são fixos no código; os das outras contas são derivados de forma determinística (SHA-256 do usuário + viagem, em formato UUID v4), então também nunca mudam. Esses e-mails já existem no seed: tentar se cadastrar com um deles responde "e-mail já cadastrado".
 
 ## API própria
 
@@ -265,7 +274,7 @@ O app roda no runtime Node.js padrão da Vercel. O passo a passo é o mesmo nas 
 > - há um **novo deploy**;
 > - o tráfego cai em **outra instância** (duas requisições seguidas podem ir para instâncias diferentes, cada uma com a sua memória).
 >
-> Só os **dados de demonstração** são estáveis: a conta de demonstração e suas 7 viagens têm ids fixos e reaparecem iguais em qualquer instância, então o login dela e os links `/viagens/<id>` sempre funcionam. Quem se cadastrar no app pode ser "esquecido" a qualquer momento (o próximo acesso responde 401 e o app pede um novo login). Para a apresentação, use a conta demo. Persistência de verdade é o objetivo da parte 2.
+> Só os **dados de demonstração** são estáveis: as 6 contas de demonstração e as 7 viagens de cada uma têm ids fixos e reaparecem iguais em qualquer instância, então o login delas e os links `/viagens/<id>` sempre funcionam. Quem se cadastrar no app pode ser "esquecido" a qualquer momento (o próximo acesso responde 401 e o app pede um novo login). Para a apresentação, use uma das contas de demonstração. As edições também voltam ao estado inicial nessas situações. Persistência de verdade é o objetivo da parte 2.
 
 ### Parte 2 — PostgreSQL (Neon via Marketplace)
 
@@ -319,7 +328,7 @@ src/
 ├─ db/                                  # camada de dados: repositórios + 2 implementações
 │  ├─ memory/                           #   banco em memória (padrão — parte 1)
 │  ├─ postgres/                         #   Drizzle + pg (parte 2)
-│  └─ seed-data.ts                      #   dados de demonstração (ids fixos)
+│  └─ seed-data.ts                      #   6 contas de demonstração + 7 viagens cada (ids fixos)
 ├─ server/
 │  ├─ auth/ users/ trips/               # regras de negócio, schemas zod, serializers
 │  ├─ destinations/                     # insights (junta as APIs externas)

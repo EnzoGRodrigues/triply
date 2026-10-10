@@ -1,6 +1,6 @@
 /**
- * Seed do modo Postgres (`DB_DRIVER=postgres`): recria a conta de demonstração e suas
- * viagens, com os MESMOS dados e ids fixos do banco em memória (`src/db/seed-data.ts`).
+ * Seed do modo Postgres (`DB_DRIVER=postgres`): recria as 6 contas de demonstração, cada uma
+ * com as suas 7 viagens, com os MESMOS dados e ids fixos do banco em memória (`src/db/seed-data.ts`).
  * Idempotente. No modo memória não é preciso rodar nada — o banco já nasce populado.
  *   npm run db:seed
  */
@@ -14,10 +14,11 @@ async function main() {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL não definida (veja .env.example): o seed grava no Postgres.");
   }
-  const { email, completed, planned } = await seedPostgres();
-  console.log(
-    `Seed concluído (Postgres): ${email} / ${DEMO_PASSWORD} — ${completed} realizadas e ${planned} planejadas.`,
-  );
+  const accounts = await seedPostgres();
+  console.log(`Seed concluído (Postgres): ${accounts.length} contas, todas com a senha ${DEMO_PASSWORD}.`);
+  for (const { email, completed, planned } of accounts) {
+    console.log(`  ${email} — ${completed} realizadas e ${planned} planejadas`);
+  }
 }
 
 main()
