@@ -22,7 +22,7 @@ export function demoUser(): Omit<NewUser, "passwordHash"> {
   return {
     id: DEMO_USER_ID,
     name: "Sarah Alves Soares",
-    email: "sarah@triply.app",
+    email: "enzo@triply.app",
     createdAt: new Date(SEED_AT),
   };
 }

@@ -6,7 +6,7 @@
 export const exampleUser = {
   id: "12670cfe-04b1-45de-a8ed-5aaf9a0c928e",
   name: "Sarah Alves Soares",
-  email: "sarah@triply.app",
+  email: "enzo@triply.app",
   createdAt: "2026-10-10T00:59:36.434Z",
 };
 

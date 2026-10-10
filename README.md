@@ -6,7 +6,7 @@ Trabalho da disciplina **DSW3 – Desenvolvimento Web 3**. O protótipo original
 
 | | |
 |---|---|
-| 🚀 **App no ar (Vercel)** | **https://triply-kappa-sepia.vercel.app** — entre com `sarah@triply.app` / `triply123` · [docs da API](https://triply-kappa-sepia.vercel.app/api-docs) |
+| 🚀 **App no ar (Vercel)** | **https://triply-kappa-sepia.vercel.app** — entre com `enzo@triply.app` / `triply123` · [docs da API](https://triply-kappa-sepia.vercel.app/api-docs) |
 | 📚 **Documentação interativa da API** | [`/api-docs`](http://localhost:3000/api-docs) (OpenAPI 3.1, com "Try it") · spec em [`/api/openapi.json`](http://localhost:3000/api/openapi.json) |
 | 📖 **Referência dos endpoints** | [`docs/API.md`](docs/API.md) |
 | 🧭 **Arquitetura e APIs externas (página do app)** | [`/sobre`](http://localhost:3000/sobre) |
@@ -202,7 +202,7 @@ Os scripts `db:*` só valem para o modo Postgres; no modo memória não há nada
 
 | E-mail | Senha |
 |---|---|
-| `sarah@triply.app` | `triply123` |
+| `enzo@triply.app` | `triply123` |
 
 Ela tem **2 viagens realizadas** (Espanha e França) e **5 planejadas** (Maragogi, México/Tulum, Indonésia/Bali, Barra Grande e Natal), com as fotos de capa do Wikimedia Commons. Os dados estão em `src/db/seed-data.ts`, com **ids fixos**: no modo memória o banco se popula sozinho no primeiro acesso; no modo Postgres, `npm run db:seed` grava exatamente os mesmos registros. Como os ids não mudam, a sessão da Sarah e links como `/viagens/<id>` continuam válidos depois de um reinício.
 
@@ -224,7 +224,7 @@ Teste rápido:
 ```bash
 curl -s -c c.txt -X POST http://localhost:3000/api/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"email":"sarah@triply.app","password":"triply123"}'
+  -d '{"email":"enzo@triply.app","password":"triply123"}'
 curl -s -b c.txt http://localhost:3000/api/profile
 curl -s -b c.txt "http://localhost:3000/api/destinations/search?q=Bali"
 ```
@@ -258,7 +258,7 @@ O app roda no runtime Node.js padrão da Vercel. O passo a passo é o mesmo nas 
 
 1. **Repositório:** envie o código para o GitHub e, na Vercel, **Add New → Project → Import** o repositório. O *framework preset* (Next.js) e o comando de build (`next build`) são detectados automaticamente.
 2. **Variável de ambiente:** em **Settings → Environment Variables**, crie `JWT_SECRET` (todos os ambientes) com um valor aleatório de 32+ caracteres: `openssl rand -base64 48`. **Não** defina `DB_DRIVER` nem `DATABASE_URL` — o padrão é o banco em memória.
-3. **Deploy:** faça `git push` (ou **Deploy** no painel). Abra `https://<seu-projeto>.vercel.app/api-docs` para conferir a documentação e entre com a usuária demo (`sarah@triply.app` / `triply123`).
+3. **Deploy:** faça `git push` (ou **Deploy** no painel). Abra `https://<seu-projeto>.vercel.app/api-docs` para conferir a documentação e entre com a usuária demo (`enzo@triply.app` / `triply123`).
 
 > ⚠️ **O que é volátil na Vercel.** Na Vercel o app roda em *funções serverless*, e o banco em memória vive **na memória de cada instância**. Por isso os dados criados no app (contas novas, viagens, capas enviadas, tentativas de login) **somem** quando:
 > - a instância é **reiniciada ou reciclada** (a Vercel desliga instâncias ociosas e sobe outras — um *cold start*);

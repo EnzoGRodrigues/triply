@@ -195,7 +195,7 @@ Detalhes, exemplos reais de request/response e limites em `docs/research/apis-ex
 Se precisar mexer em arquivo de outro dono, peça ao orquestrador.
 
 ### Dados de demonstração (seed)
-Os dados ficam em `src/db/seed-data.ts` (UUIDs fixos). No modo memória são carregados automaticamente ao subir; no modo postgres, `npm run db:seed` os grava. Cria o usuário **Sarah Alves Soares** — `sarah@triply.app` / `triply123` — com:
+Os dados ficam em `src/db/seed-data.ts` (UUIDs fixos). No modo memória são carregados automaticamente ao subir; no modo postgres, `npm run db:seed` os grava. Cria o usuário **Sarah Alves Soares** — `enzo@triply.app` / `triply123` — com:
 - realizadas: **Espanha** (Madrid; hospedagem "Madrid Downtown Hostel"; atividades "Museu Nacional Centro de Arte Reina Sofía"; EUR 6,27; gastos R$ 16.000,27; 4 estrelas; família; avião; experiência do Figma) e **França** (Paris);
 - planejadas (datas futuras, 2027): **Maragogi - Alagoas**, **Indonésia** (Bali), **Barra Grande - Piauí**, **Natal - Rio Grande do Norte**, **México** (Tulum, hospedagem "Hostal Mulut Tulum", atividades "Mergulhar em um cenote e passear por Tulum").
 Capas com URLs do Wikimedia.

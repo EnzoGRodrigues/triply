@@ -72,7 +72,7 @@ Todo erro tem o mesmo formato, com o status HTTP correspondente:
 ### Segurança
 
 - Senhas com **bcrypt** (custo 10); `password_hash` nunca sai em nenhuma resposta.
-- E-mail sempre normalizado (`trim` + minúsculas) — `Sarah@Triply.app` e `sarah@triply.app` são a mesma conta.
+- E-mail sempre normalizado (`trim` + minúsculas) — `Enzo@Triply.app` e `enzo@triply.app` são a mesma conta.
 - Login não revela qual dos dois estava errado (e gasta o mesmo tempo para e-mail inexistente).
 - Toda consulta de viagem filtra por `user_id` da sessão: viagem de outro usuário responde **404**.
 - Páginas protegidas são barradas em `src/proxy.ts`; a API faz a própria checagem (401 em JSON). Se o cookie trouxer um JWT válido de um usuário que não existe mais (ex.: depois de um novo seed) ou um token inválido/expirado, o 401 já vem com `Set-Cookie: triply_session=; Max-Age=0`, o que evita o ciclo `/login` → `/perfil` → 401.
@@ -121,7 +121,7 @@ Erros: `400 VALIDATION_ERROR` (ex.: `fields.confirmPassword = "As senhas não co
 ```bash
 curl -i -c cookies.txt -X POST http://localhost:3000/api/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"email":"sarah@triply.app","password":"triply123"}'
+  -d '{"email":"enzo@triply.app","password":"triply123"}'
 ```
 
 `200 OK` + cookie → `{ "user": { … } }` (mesmo formato do register).
@@ -147,7 +147,7 @@ curl -i -b cookies.txt -c cookies.txt -X POST http://localhost:3000/api/auth/log
 curl -b cookies.txt http://localhost:3000/api/auth/me
 ```
 
-`200 OK` → `{ "user": { "id": "…", "name": "Sarah Alves Soares", "email": "sarah@triply.app", "createdAt": "…" } }`
+`200 OK` → `{ "user": { "id": "…", "name": "Sarah Alves Soares", "email": "enzo@triply.app", "createdAt": "…" } }`
 Sem sessão: `401 UNAUTHORIZED` (`"Faça login para continuar."`).
 
 ---
@@ -164,7 +164,7 @@ curl -b cookies.txt http://localhost:3000/api/profile
 
 ```json
 {
-  "user": { "id": "12670cfe-04b1-45de-a8ed-5aaf9a0c928e", "name": "Sarah Alves Soares", "email": "sarah@triply.app", "createdAt": "2026-10-10T00:59:36.434Z" },
+  "user": { "id": "12670cfe-04b1-45de-a8ed-5aaf9a0c928e", "name": "Sarah Alves Soares", "email": "enzo@triply.app", "createdAt": "2026-10-10T00:59:36.434Z" },
   "stats": { "cities": 2, "countries": 2, "completedTrips": 2, "plannedTrips": 5 }
 }
 ```
@@ -415,12 +415,12 @@ npm run db:migrate   # aplica as migrações (drizzle/)
 npm run db:seed      # recria a usuária demo (idempotente)
 ```
 
-Usuária demo: **`sarah@triply.app` / `triply123`** — 2 viagens realizadas (Espanha, França) e 5 planejadas (Maragogi, México, Indonésia, Barra Grande, Natal).
+Usuária demo: **`enzo@triply.app` / `triply123`** — 2 viagens realizadas (Espanha, França) e 5 planejadas (Maragogi, México, Indonésia, Barra Grande, Natal).
 
 ```bash
 BASE=http://localhost:3000
 curl -s -c c.txt -X POST $BASE/api/auth/login -H 'Content-Type: application/json' \
-  -d '{"email":"sarah@triply.app","password":"triply123"}'
+  -d '{"email":"enzo@triply.app","password":"triply123"}'
 curl -s -b c.txt $BASE/api/profile
 curl -s -b c.txt "$BASE/api/trips?status=realizada"
 curl -s -b c.txt "$BASE/api/destinations/search?q=Bali"
