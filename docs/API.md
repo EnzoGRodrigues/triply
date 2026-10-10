@@ -21,7 +21,7 @@ A API não depende do banco usado: os serviços falam só com repositórios (`sr
 
 | `DB_DRIVER` | Banco | Observações |
 |---|---|---|
-| `memory` (padrão, quando ausente) | **Em memória** (parte 1) | Não exige `DATABASE_URL`. Nasce com a usuária demo e as 7 viagens (ids fixos). Os dados voltam ao estado inicial quando o servidor reinicia — e, na Vercel, também a cada novo deploy, *cold start* ou outra instância. |
+| `memory` (padrão, quando ausente) | **Em memória** (parte 1) | Não exige `DATABASE_URL`. Nasce com a conta demo e as 7 viagens (ids fixos). Os dados voltam ao estado inicial quando o servidor reinicia — e, na Vercel, também a cada novo deploy, *cold start* ou outra instância. |
 | `postgres` | PostgreSQL + Drizzle (parte 2) | Exige `DATABASE_URL`; tabelas criadas com `npm run db:migrate`, dados de demonstração com `npm run db:seed`. |
 
 Ao subir, o log indica o modo ativo: `[db] banco em memória — os dados voltam ao estado inicial quando o servidor reinicia` ou `[db] PostgreSQL (...) — os dados são persistentes`.
@@ -147,7 +147,7 @@ curl -i -b cookies.txt -c cookies.txt -X POST http://localhost:3000/api/auth/log
 curl -b cookies.txt http://localhost:3000/api/auth/me
 ```
 
-`200 OK` → `{ "user": { "id": "…", "name": "Sarah Alves Soares", "email": "enzo@triply.app", "createdAt": "…" } }`
+`200 OK` → `{ "user": { "id": "…", "name": "Enzo Rodrigues", "email": "enzo@triply.app", "createdAt": "…" } }`
 Sem sessão: `401 UNAUTHORIZED` (`"Faça login para continuar."`).
 
 ---
@@ -164,7 +164,7 @@ curl -b cookies.txt http://localhost:3000/api/profile
 
 ```json
 {
-  "user": { "id": "12670cfe-04b1-45de-a8ed-5aaf9a0c928e", "name": "Sarah Alves Soares", "email": "enzo@triply.app", "createdAt": "2026-10-10T00:59:36.434Z" },
+  "user": { "id": "12670cfe-04b1-45de-a8ed-5aaf9a0c928e", "name": "Enzo Rodrigues", "email": "enzo@triply.app", "createdAt": "2026-10-10T00:59:36.434Z" },
   "stats": { "cities": 2, "countries": 2, "completedTrips": 2, "plannedTrips": 5 }
 }
 ```
@@ -412,10 +412,10 @@ Atribuições exibidas na interface: "Dados meteorológicos: Open-Meteo (CC BY 4
 # Parte 1 (padrão): banco em memória — não há o que migrar nem semear; basta `npm run dev`.
 # Modo Postgres (DB_DRIVER=postgres + DATABASE_URL):
 npm run db:migrate   # aplica as migrações (drizzle/)
-npm run db:seed      # recria a usuária demo (idempotente)
+npm run db:seed      # recria a conta demo (idempotente)
 ```
 
-Usuária demo: **`enzo@triply.app` / `triply123`** — 2 viagens realizadas (Espanha, França) e 5 planejadas (Maragogi, México, Indonésia, Barra Grande, Natal).
+Conta demo: **`enzo@triply.app` / `triply123`** — 2 viagens realizadas (Espanha, França) e 5 planejadas (Maragogi, México, Indonésia, Barra Grande, Natal).
 
 ```bash
 BASE=http://localhost:3000

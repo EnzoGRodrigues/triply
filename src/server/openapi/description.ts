@@ -7,7 +7,7 @@ Projeto da disciplina **DSW3 – Desenvolvimento Web 3**, feito com Next.js 16 (
 
 ## Como testar aqui
 
-1. Abra **Autenticação → Entrar** e execute \`POST /api/auth/login\` com a usuária de demonstração
+1. Abra **Autenticação → Entrar** e execute \`POST /api/auth/login\` com a conta de demonstração
    \`enzo@triply.app\` / \`triply123\`.
 2. O navegador guarda o cookie \`triply_session\` e o envia sozinho nas próximas requisições (mesma origem).
 3. Experimente \`GET /api/trips\`, \`GET /api/profile\` e \`GET /api/destinations/search?q=Bali\`.

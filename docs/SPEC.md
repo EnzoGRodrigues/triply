@@ -29,7 +29,7 @@ Referências visuais: `docs/figma/*.png` (capturas das 8 telas).
 
 Variáveis de ambiente (`.env.local`, já criado; modelo em `.env.example`): `JWT_SECRET` (obrigatória); `DB_DRIVER` (`memory` padrão | `postgres`); `DATABASE_URL` / `DATABASE_URL_UNPOOLED` só no modo `postgres`.
 
-> **Banco em memória (parte 1 do trabalho).** Os serviços (`src/server/**`) só falam com as interfaces de repositório (`src/db/repositories.ts`); a implementação é escolhida por `DB_DRIVER`. Em memória, os dados voltam ao estado inicial (seed) sempre que o servidor reinicia — na Vercel isso acontece em deploy, cold start ou quando a requisição cai em outra instância. A Sarah e as viagens do seed têm UUIDs fixos, então o login dela e os links continuam válidos depois de um reinício.
+> **Banco em memória (parte 1 do trabalho).** Os serviços (`src/server/**`) só falam com as interfaces de repositório (`src/db/repositories.ts`); a implementação é escolhida por `DB_DRIVER`. Em memória, os dados voltam ao estado inicial (seed) sempre que o servidor reinicia — na Vercel isso acontece em deploy, cold start ou quando a requisição cai em outra instância. A conta de demonstração e as viagens do seed têm UUIDs fixos, então o login dela e os links continuam válidos depois de um reinício.
 
 ---
 
@@ -195,7 +195,7 @@ Detalhes, exemplos reais de request/response e limites em `docs/research/apis-ex
 Se precisar mexer em arquivo de outro dono, peça ao orquestrador.
 
 ### Dados de demonstração (seed)
-Os dados ficam em `src/db/seed-data.ts` (UUIDs fixos). No modo memória são carregados automaticamente ao subir; no modo postgres, `npm run db:seed` os grava. Cria o usuário **Sarah Alves Soares** — `enzo@triply.app` / `triply123` — com:
+Os dados ficam em `src/db/seed-data.ts` (UUIDs fixos). No modo memória são carregados automaticamente ao subir; no modo postgres, `npm run db:seed` os grava. Cria a conta **Enzo Rodrigues** — `enzo@triply.app` / `triply123` — com:
 - realizadas: **Espanha** (Madrid; hospedagem "Madrid Downtown Hostel"; atividades "Museu Nacional Centro de Arte Reina Sofía"; EUR 6,27; gastos R$ 16.000,27; 4 estrelas; família; avião; experiência do Figma) e **França** (Paris);
 - planejadas (datas futuras, 2027): **Maragogi - Alagoas**, **Indonésia** (Bali), **Barra Grande - Piauí**, **Natal - Rio Grande do Norte**, **México** (Tulum, hospedagem "Hostal Mulut Tulum", atividades "Mergulhar em um cenote e passear por Tulum").
 Capas com URLs do Wikimedia.

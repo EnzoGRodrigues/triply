@@ -4,7 +4,7 @@
  *  - Postgres: `npm run db:seed` grava exatamente os mesmos registros.
  *
  * Os ids são FIXOS de propósito: depois de um *cold start* (ex.: na Vercel) o cookie
- * JWT da Sarah e links como `/viagens/<id>` continuam válidos. As datas de criação
+ * JWT da conta de demonstração e links como `/viagens/<id>` continuam válidos. As datas de criação
  * também são fixas, para as respostas serem idênticas entre reinícios.
  */
 
@@ -17,11 +17,11 @@ export const DEMO_USER_ID = "c2ff10ff-7778-4236-97ac-4a588381f0d3";
 /** Momento de referência dos registros de demonstração. */
 const SEED_AT = "2026-10-01T12:00:00.000Z";
 
-/** Usuária de demonstração (sem o hash da senha — ver `buildDemoData`). */
+/** Conta de demonstração (sem o hash da senha — ver `buildDemoData`). */
 export function demoUser(): Omit<NewUser, "passwordHash"> {
   return {
     id: DEMO_USER_ID,
-    name: "Sarah Alves Soares",
+    name: "Enzo Rodrigues",
     email: "enzo@triply.app",
     createdAt: new Date(SEED_AT),
   };

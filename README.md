@@ -21,7 +21,7 @@ Trabalho da disciplina **DSW3 – Desenvolvimento Web 3**. O protótipo original
 - [Stack](#stack)
 - [Arquitetura](#arquitetura)
 - [Rodando localmente](#rodando-localmente)
-- [Usuária de demonstração](#usuária-de-demonstração)
+- [Conta de demonstração](#conta-de-demonstração)
 - [API própria](#api-própria)
 - [APIs externas consumidas](#apis-externas-consumidas)
 - [Deploy na Vercel](#deploy-na-vercel)
@@ -157,7 +157,7 @@ Ao subir, o log mostra qual banco está ativo:
 [db] banco em memória — os dados voltam ao estado inicial quando o servidor reinicia
 ```
 
-Entre com a [usuária de demonstração](#usuária-de-demonstração) e use o app normalmente. **Os dados criados (contas, viagens, capas) ficam só na memória do servidor**: reiniciar o `npm run dev` volta tudo ao estado inicial (a Sarah e suas 7 viagens).
+Entre com a [conta de demonstração](#conta-de-demonstração) e use o app normalmente. **Os dados criados (contas, viagens, capas) ficam só na memória do servidor**: reiniciar o `npm run dev` volta tudo ao estado inicial (a conta de demonstração e suas 7 viagens).
 
 ### Modo Postgres (parte 2)
 
@@ -173,7 +173,7 @@ createdb triply
 #   DATABASE_URL=postgres://SEU_USUARIO@localhost:5432/triply
 
 npm run db:migrate   # cria as tabelas
-npm run db:seed      # grava a usuária demo (mesmos dados e ids do modo memória)
+npm run db:seed      # grava a conta demo (mesmos dados e ids do modo memória)
 npm run dev          # o log passa a mostrar: [db] PostgreSQL (...) — os dados são persistentes
 ```
 
@@ -193,22 +193,22 @@ Nenhuma das APIs externas exige chave.
 | `npm run docs:check` | Confere a spec OpenAPI contra as rotas e os schemas zod |
 | `npm run db:generate` | *(modo Postgres)* Gera uma migração SQL a partir de `src/db/postgres/schema.ts` |
 | `npm run db:migrate` | *(modo Postgres)* Aplica as migrações em `drizzle/` |
-| `npm run db:seed` | *(modo Postgres)* Recria a usuária de demonstração e suas viagens (idempotente) |
+| `npm run db:seed` | *(modo Postgres)* Recria a conta de demonstração e suas viagens (idempotente) |
 | `npm run db:studio` | *(modo Postgres)* Abre o Drizzle Studio (navegador de dados) |
 
 Os scripts `db:*` só valem para o modo Postgres; no modo memória não há nada para migrar nem semear.
 
-## Usuária de demonstração
+## Conta de demonstração
 
 | E-mail | Senha |
 |---|---|
 | `enzo@triply.app` | `triply123` |
 
-Ela tem **2 viagens realizadas** (Espanha e França) e **5 planejadas** (Maragogi, México/Tulum, Indonésia/Bali, Barra Grande e Natal), com as fotos de capa do Wikimedia Commons. Os dados estão em `src/db/seed-data.ts`, com **ids fixos**: no modo memória o banco se popula sozinho no primeiro acesso; no modo Postgres, `npm run db:seed` grava exatamente os mesmos registros. Como os ids não mudam, a sessão da Sarah e links como `/viagens/<id>` continuam válidos depois de um reinício.
+A conta tem **2 viagens realizadas** (Espanha e França) e **5 planejadas** (Maragogi, México/Tulum, Indonésia/Bali, Barra Grande e Natal), com as fotos de capa do Wikimedia Commons. Os dados estão em `src/db/seed-data.ts`, com **ids fixos**: no modo memória o banco se popula sozinho no primeiro acesso; no modo Postgres, `npm run db:seed` grava exatamente os mesmos registros. Como os ids não mudam, a sessão da conta de demonstração e links como `/viagens/<id>` continuam válidos depois de um reinício.
 
 ## API própria
 
-- **Documentação interativa:** abra [`/api-docs`](http://localhost:3000/api-docs), execute `POST /api/auth/login` com a usuária demo e experimente as demais rotas — o navegador reenvia o cookie sozinho (mesma origem).
+- **Documentação interativa:** abra [`/api-docs`](http://localhost:3000/api-docs), execute `POST /api/auth/login` com a conta demo e experimente as demais rotas — o navegador reenvia o cookie sozinho (mesma origem).
 - **Especificação OpenAPI 3.1:** [`/api/openapi.json`](http://localhost:3000/api/openapi.json) (importável no Postman, Insomnia etc.).
 - **Referência com exemplos `curl`:** [`docs/API.md`](docs/API.md).
 
@@ -258,14 +258,14 @@ O app roda no runtime Node.js padrão da Vercel. O passo a passo é o mesmo nas 
 
 1. **Repositório:** envie o código para o GitHub e, na Vercel, **Add New → Project → Import** o repositório. O *framework preset* (Next.js) e o comando de build (`next build`) são detectados automaticamente.
 2. **Variável de ambiente:** em **Settings → Environment Variables**, crie `JWT_SECRET` (todos os ambientes) com um valor aleatório de 32+ caracteres: `openssl rand -base64 48`. **Não** defina `DB_DRIVER` nem `DATABASE_URL` — o padrão é o banco em memória.
-3. **Deploy:** faça `git push` (ou **Deploy** no painel). Abra `https://<seu-projeto>.vercel.app/api-docs` para conferir a documentação e entre com a usuária demo (`enzo@triply.app` / `triply123`).
+3. **Deploy:** faça `git push` (ou **Deploy** no painel). Abra `https://<seu-projeto>.vercel.app/api-docs` para conferir a documentação e entre com a conta demo (`enzo@triply.app` / `triply123`).
 
 > ⚠️ **O que é volátil na Vercel.** Na Vercel o app roda em *funções serverless*, e o banco em memória vive **na memória de cada instância**. Por isso os dados criados no app (contas novas, viagens, capas enviadas, tentativas de login) **somem** quando:
 > - a instância é **reiniciada ou reciclada** (a Vercel desliga instâncias ociosas e sobe outras — um *cold start*);
 > - há um **novo deploy**;
 > - o tráfego cai em **outra instância** (duas requisições seguidas podem ir para instâncias diferentes, cada uma com a sua memória).
 >
-> Só os **dados de demonstração** são estáveis: a Sarah e suas 7 viagens têm ids fixos e reaparecem iguais em qualquer instância, então o login dela e os links `/viagens/<id>` sempre funcionam. Quem se cadastrar no app pode ser "esquecido" a qualquer momento (o próximo acesso responde 401 e o app pede um novo login). Para a apresentação, use a usuária demo. Persistência de verdade é o objetivo da parte 2.
+> Só os **dados de demonstração** são estáveis: a conta de demonstração e suas 7 viagens têm ids fixos e reaparecem iguais em qualquer instância, então o login dela e os links `/viagens/<id>` sempre funcionam. Quem se cadastrar no app pode ser "esquecido" a qualquer momento (o próximo acesso responde 401 e o app pede um novo login). Para a apresentação, use a conta demo. Persistência de verdade é o objetivo da parte 2.
 
 ### Parte 2 — PostgreSQL (Neon via Marketplace)
 

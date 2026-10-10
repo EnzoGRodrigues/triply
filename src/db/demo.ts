@@ -9,7 +9,7 @@ const BCRYPT_COST = 10;
 let cachedHash: string | undefined;
 
 /**
- * Usuária + viagens de demonstração prontas para gravar (senha já com hash).
+ * Conta + viagens de demonstração prontas para gravar (senha já com hash).
  * O hash é calculado uma vez por processo (~100 ms) e reaproveitado.
  */
 export function buildDemoData(): { user: NewUser; trips: NewTrip[] } {

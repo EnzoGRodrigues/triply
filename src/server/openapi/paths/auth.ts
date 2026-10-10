@@ -30,7 +30,7 @@ export const authPaths: Record<string, JsonObject> = {
           "application/json": {
             schema: ref("RegisterInput"),
             example: {
-              name: "Sarah Alves Soares",
+              name: "Enzo Rodrigues",
               email: "enzo@triply.app",
               password: "triply123",
               confirmPassword: "triply123",
@@ -80,7 +80,7 @@ export const authPaths: Record<string, JsonObject> = {
       operationId: "loginUser",
       summary: "Entrar",
       description:
-        "Valida e-mail e senha e abre a sessão (cookie `triply_session`). Depois de executar este endpoint na própria documentação, o navegador envia o cookie automaticamente nas demais requisições (mesma origem). A resposta de erro não revela qual dos dois campos estava errado. Depois de **10 falhas em 15 minutos** (mesmo e-mail e IP) o login é bloqueado com `429` e `Retry-After`.\n\n**Usuária de demonstração:** `enzo@triply.app` / `triply123`.",
+        "Valida e-mail e senha e abre a sessão (cookie `triply_session`). Depois de executar este endpoint na própria documentação, o navegador envia o cookie automaticamente nas demais requisições (mesma origem). A resposta de erro não revela qual dos dois campos estava errado. Depois de **10 falhas em 15 minutos** (mesmo e-mail e IP) o login é bloqueado com `429` e `Retry-After`.\n\n**Conta de demonstração:** `enzo@triply.app` / `triply123`.",
       security: [],
       requestBody: {
         required: true,

@@ -1,5 +1,5 @@
 /**
- * Seed do modo Postgres (`DB_DRIVER=postgres`): recria a usuária de demonstração e suas
+ * Seed do modo Postgres (`DB_DRIVER=postgres`): recria a conta de demonstração e suas
  * viagens, com os MESMOS dados e ids fixos do banco em memória (`src/db/seed-data.ts`).
  * Idempotente. No modo memória não é preciso rodar nada — o banco já nasce populado.
  *   npm run db:seed

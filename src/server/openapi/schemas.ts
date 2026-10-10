@@ -189,7 +189,7 @@ export const schemas: Record<string, JsonObject> = {
     type: "object",
     required: ["name", "email", "password", "confirmPassword"],
     properties: {
-      name: { type: "string", minLength: 2, maxLength: 100, examples: ["Sarah Alves Soares"] },
+      name: { type: "string", minLength: 2, maxLength: 100, examples: ["Enzo Rodrigues"] },
       email: {
         type: "string",
         format: "email",

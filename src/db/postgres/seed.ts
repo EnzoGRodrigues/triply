@@ -7,7 +7,7 @@ import { tripInsertValues } from "./trips";
 
 /**
  * Grava no Postgres os MESMOS dados de demonstração do banco em memória (`src/db/seed-data.ts`,
- * com ids fixos). Idempotente: recria a usuária demo (as viagens saem junto, por `ON DELETE CASCADE`).
+ * com ids fixos). Idempotente: recria a conta demo (as viagens saem junto, por `ON DELETE CASCADE`).
  */
 export async function seedPostgres(): Promise<{ email: string; completed: number; planned: number }> {
   const { user, trips: demoTrips } = buildDemoData();
