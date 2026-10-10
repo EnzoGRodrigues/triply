@@ -356,7 +356,7 @@ curl -b cookies.txt 'http://localhost:3000/api/destinations/insights?name=Tulum&
 
 - `currency`: para BRL, `rateToBRL = 1`, `label = "R$ 1,00"` e nenhuma chamada externa. Cotações muito pequenas ganham mais casas (`1 IDR = R$ 0,00028`). `sourceUrl` é o link de atribuição (obrigatório para a ExchangeRate-API: exibir "Cotações por ExchangeRate-API").
 - `climate.source`: `previsao` (todo o período nos próximos 16 dias, ou sem datas → próximos 7 dias) ou `historico` (mesmas datas de um ano anterior já completo, ou as datas reais se o período já passou). Período limitado a 31 dias; dias sem dado são ignorados. `label` = `"≈ 20 °C"` ou `"≈ 25 a 30 °C"`. Atribuição: "Dados meteorológicos: Open-Meteo (CC BY 4.0)".
-- `image`: foto da Wikipédia (1280 px; SVG descartado). `attribution`/`license`/`pageUrl` vêm do Wikimedia Commons — exibir os créditos é exigido pela licença.
+- `image`: foto da Wikipédia (1280 px; SVG descartado). Quando o `name` é um **país inteiro** ("México", "Indonésia" — mesmo que `lat`/`lon` sejam de uma cidade dele, como Tulum ou Bali), o artigo do país só tem bandeira/mapa em SVG; por isso a foto sugerida vem da **capital** do país. `attribution`/`license`/`pageUrl` vêm do Wikimedia Commons — exibir os créditos é exigido pela licença.
 
 Erros: `400` (nenhum identificador do destino, `lat` sem `lon`, datas inválidas ou volta antes da ida).
 

@@ -50,7 +50,7 @@ export const destinationPaths: Record<string, JsonObject> = {
         "- **`country`** — dataset `world-countries` (nome em pt) + bandeira da flagcdn;\n" +
         "- **`currency`** — AwesomeAPI → ExchangeRate-API → Frankfurter (cadeia de fallback): cotação da moeda local em R$;\n" +
         "- **`climate`** — Open-Meteo Forecast (período todo em até 16 dias) ou Open-Meteo Archive (mesmas datas de um ano anterior);\n" +
-        "- **`image`** — Wikipedia/MediaWiki (foto de capa) + Wikimedia Commons (autor e licença).\n\n" +
+        "- **`image`** — Wikipedia/MediaWiki (foto de capa) + Wikimedia Commons (autor e licença). Se `name` for um país inteiro (ex.: \"México\"), a foto vem da capital — o artigo do país só tem bandeira/mapa em SVG —, mesmo com `lat`/`lon` de uma cidade dele.\n\n" +
         "**Cada bloco falha de forma independente:** se uma API estiver fora do ar, aquele bloco vem `null` e a resposta continua `200`. Informe ao menos `name`, `countryCode` ou `lat`+`lon`.",
       parameters: [
         queryParam("name", 'Nome ou rótulo do destino ("Natal", "Natal - Rio Grande do Norte", "Tulum, México"). Ajuda a desambiguar a imagem.', { type: "string", maxLength: 160 }, "Tulum"),

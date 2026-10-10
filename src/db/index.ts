@@ -21,33 +21,31 @@ export function getDbDriver(): DbDriver {
   throw new Error(`DB_DRIVER inválido ("${process.env.DB_DRIVER}"): use "memory" (padrão) ou "postgres".`);
 }
 
-// Cache em globalThis: no `next dev` cada rota pode ter a sua cópia deste módulo e o HMR o
-// recarrega; assim o driver é escolhido (e logado) uma única vez por processo.
-const globalForRepos = globalThis as typeof globalThis & {
-  __triplyRepos?: Promise<Repositories>;
-};
+// Só o aviso de subida fica em globalThis (1 log por processo, mesmo com HMR/várias cópias deste
+// módulo). Os repositórios NÃO são guardados: `import()` já usa o registro de módulos (custo
+// desprezível) e, assim, no `next dev` uma edição em `src/db/**` vale na hora — só os DADOS do
+// banco em memória sobrevivem ao HMR, e eles ficam em `globalThis` (src/db/memory/store.ts).
+const globalForLog = globalThis as typeof globalThis & { __triplyDbLogged?: boolean };
 
-async function createRepositories(): Promise<Repositories> {
+function logOnce(message: string): void {
+  if (globalForLog.__triplyDbLogged) return;
+  globalForLog.__triplyDbLogged = true;
+  console.log(message);
+}
+
+async function loadRepositories(): Promise<Repositories> {
   if (getDbDriver() === "postgres") {
     if (!process.env.DATABASE_URL) {
       throw new Error("DB_DRIVER=postgres exige DATABASE_URL (veja .env.example).");
     }
     const { createPostgresRepositories, describeDatabaseTarget } = await import("./postgres");
-    console.log(`[db] PostgreSQL (${describeDatabaseTarget()}) — os dados são persistentes`);
+    logOnce(`[db] PostgreSQL (${describeDatabaseTarget()}) — os dados são persistentes`);
     return createPostgresRepositories();
   }
 
   const { createMemoryRepositories } = await import("./memory");
-  console.log("[db] banco em memória — os dados voltam ao estado inicial quando o servidor reinicia");
+  logOnce("[db] banco em memória — os dados voltam ao estado inicial quando o servidor reinicia");
   return createMemoryRepositories();
-}
-
-function loadRepositories(): Promise<Repositories> {
-  globalForRepos.__triplyRepos ??= createRepositories().catch((error: unknown) => {
-    globalForRepos.__triplyRepos = undefined; // configuração errada: tenta de novo na próxima chamada
-    throw error;
-  });
-  return globalForRepos.__triplyRepos;
 }
 
 /** Cada método espera o driver carregar e delega para ele (a fachada em si é síncrona). */

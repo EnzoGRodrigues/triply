@@ -1,6 +1,6 @@
 import { getCountry, getCountryInsight } from "@/server/external/countries";
 import { getCurrencyInsight } from "@/server/external/exchange";
-import { cityFromLabel, resolvePlace, type Place } from "@/server/external/geocoding";
+import { cityFromLabel, normalizeName, resolvePlace, type Place } from "@/server/external/geocoding";
 import { withDeadline } from "@/server/external/http";
 import { getDestinationImage } from "@/server/external/image";
 import { getClimate } from "@/server/external/weather";
@@ -74,7 +74,11 @@ export async function getDestinationInsights(
   const imageTask = async () => {
     const place = await placeTask;
     const country = getCountry(place?.countryCode ?? (await countryCodeTask()));
-    const isCountry = place?.isCountry ?? !name;
+    // Mesmo sem achar o lugar (geocoding fora do ar, coordenadas de uma cidade do país...), um nome
+    // igual ao do país é um destino-país: a foto vem da capital, pois o artigo do país só tem bandeira/mapa.
+    const nameIsCountry =
+      !!name && !!country && normalizeName(cityFromLabel(name)) === normalizeName(country.name);
+    const isCountry = place?.isCountry ?? (name ? nameIsCountry : true);
     const title = place?.name ?? (name ? cityFromLabel(name) : country?.name);
     if (!title) return null;
 

@@ -60,7 +60,7 @@ function toPlace(raw: GeocodingApiResult): Place {
 }
 
 /** Minúsculas e sem acentos, para comparar nomes ("Bāli" = "bali"). */
-function normalize(text: string): string {
+export function normalizeName(text: string): string {
   return text
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -109,7 +109,7 @@ const QUERY_ALIASES: Record<string, string[]> = {
  * "Madrid" ou "Tóquio" aparecem mesmo quando se digita o nome internacional.
  */
 function score(result: GeocodingApiResult, index: number, wanted: string): number {
-  const name = normalize(result.name);
+  const name = normalizeName(result.name);
   const exact = name === wanted;
   const startsWith = !exact && name.startsWith(wanted);
   const wholeWordPrefix = startsWith && /[\s\-,/(]/.test(name.charAt(wanted.length));
@@ -130,13 +130,13 @@ function score(result: GeocodingApiResult, index: number, wanted: string): numbe
     (population + (FEATURE_BONUS[result.feature_code ?? ""] ?? 0)) * (wholeWordPrefix ? 0.6 : 1);
 
   const isSeat =
-    (exact || partialPrefix) && !!result.admin2 && normalize(result.admin2) === name ? 1.5 : 0;
+    (exact || partialPrefix) && !!result.admin2 && normalizeName(result.admin2) === name ? 1.5 : 0;
   const order = Math.max(0, 1 - index * 0.04);
   return relevance + importance + isSeat + order;
 }
 
 function rankResults(results: GeocodingApiResult[], query: string): GeocodingApiResult[] {
-  const wanted = normalize(query);
+  const wanted = normalizeName(query);
   const scored = results
     .map((result, index) => ({ result, index, score: score(result, index, wanted) }))
     .filter(({ result }) => !result.feature_code || DESTINATION_FEATURE.test(result.feature_code));
@@ -169,7 +169,7 @@ function fetchRaw(name: string): Promise<GeocodingApiResult[] | null> {
  */
 export async function searchPlaces(query: string): Promise<Place[] | null> {
   const name = query.trim();
-  const variants = [name, ...(QUERY_ALIASES[normalize(name)] ?? [])];
+  const variants = [name, ...(QUERY_ALIASES[normalizeName(name)] ?? [])];
 
   const [primary, ...extras] = await Promise.all(variants.map(fetchRaw));
   if (primary === null) return null;
@@ -266,11 +266,11 @@ export async function resolvePlace(hint: PlaceHint): Promise<Place | null> {
   if (candidates.length === 0) return null;
 
   if (qualifier) {
-    const wanted = normalize(qualifier);
+    const wanted = normalizeName(qualifier);
     const qualified = candidates.filter(
       (place) =>
-        (place.admin1 && normalize(place.admin1) === wanted) ||
-        (place.country && normalize(place.country) === wanted),
+        (place.admin1 && normalizeName(place.admin1) === wanted) ||
+        (place.country && normalizeName(place.country) === wanted),
     );
     if (qualified.length > 0) candidates = qualified;
   }
@@ -278,11 +278,16 @@ export async function resolvePlace(hint: PlaceHint): Promise<Place | null> {
   const { latitude, longitude } = hint;
   if (latitude == null || longitude == null) return candidates[0];
 
+  // Cidades/ilhas: vale o mais próximo das coordenadas, desde que perto (≤ ~1°; senão é outro homônimo).
   const distance = (place: Place) =>
     (place.latitude - latitude) ** 2 + (place.longitude - longitude) ** 2;
-  const nearest = candidates.reduce((best, place) =>
-    distance(place) < distance(best) ? place : best,
-  );
-  // Longe demais (> ~1°) = não é o mesmo lugar.
-  return distance(nearest) <= 1 ? nearest : null;
+  const nearby = candidates
+    .filter((place) => !place.isCountry)
+    .reduce<Place | null>((best, place) => (!best || distance(place) < distance(best) ? place : best), null);
+  if (nearby && distance(nearby) <= 1) return nearby;
+
+  // Destino que é um país inteiro ("México", "Indonésia"): a coordenada do geocoder é o centro do
+  // país e uma cidade dentro dele (ex.: Tulum) sempre estaria "longe" — não vale descartá-lo.
+  const wantedName = normalizeName(city);
+  return candidates.find((place) => place.isCountry && normalizeName(place.name) === wantedName) ?? null;
 }
