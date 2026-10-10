@@ -7,6 +7,7 @@ Trabalho da disciplina **DSW3 – Desenvolvimento Web 3**. O protótipo original
 | | |
 |---|---|
 | 🚀 **App no ar (Vercel)** | **https://triply-kappa-sepia.vercel.app** — entre com `enzo@triply.app` / `triply123` · [docs da API](https://triply-kappa-sepia.vercel.app/api-docs) |
+| 📘 **Guia do projeto (estudo e apresentação)** | [`docs/guia/`](docs/guia/README.md): como funciona, APIs, conexão front ↔ back e onde os dados ficam |
 | 📚 **Documentação interativa da API** | [`/api-docs`](http://localhost:3000/api-docs) (OpenAPI 3.1, com "Try it") · spec em [`/api/openapi.json`](http://localhost:3000/api/openapi.json) |
 | 📖 **Referência dos endpoints** | [`docs/API.md`](docs/API.md) |
 | 🧭 **Arquitetura e APIs externas (página do app)** | [`/sobre`](http://localhost:3000/sobre) |
