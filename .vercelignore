@@ -1,0 +1,9 @@
+# Nunca enviar segredos, logs locais nem artefatos de QA no deploy pela CLI
+.env*
+!.env.example
+.dev.log
+*.log
+.maestri
+docs/qa/img
+.next
+node_modules
