@@ -1,26 +1,165 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ─────────────── Design system Triply (Material 3 · SPEC §3) ─────────────── */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  --color-primary: #3300ff;
+  --color-primary-hover: #2900cc;
+  --color-primary-soft: #e8def8;
+  --color-primary-faint: #f4efff;
+  --color-bg: #efedf1;
+  --color-surface: #ffffff;
+  --color-field: #e6e0e9;
+  --color-field-line: #49454f;
+  --color-line: #cac4d0;
+  --color-text: #1d1b20;
+  --color-text-muted: #49454f;
+  --color-danger: #e8170f;
+  --color-danger-hover: #c40f08;
+  --color-danger-soft: #fdeceb;
+  /* Vermelho mais escuro só para TEXTO de erro (≥ 4,5:1 sobre o fundo claro). */
+  --color-danger-text: #b9120b;
+  /* Placeholder dos campos filled (≥ 4,5:1 sobre #E6E0E9). */
+  --color-placeholder: #5f5b66;
+  --color-success: #0f7b3f;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --radius-card: 14px;
+
+  --shadow-card: 0 1px 2px rgb(29 27 32 / 0.06), 0 2px 8px rgb(29 27 32 / 0.06);
+  --shadow-card-hover: 0 4px 10px rgb(51 0 255 / 0.1), 0 12px 28px rgb(29 27 32 / 0.12);
+  --shadow-nav: 0 1px 0 rgb(29 27 32 / 0.06), 0 4px 16px rgb(29 27 32 / 0.04);
+
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-dialog-in: dialog-in 180ms cubic-bezier(0.2, 0, 0, 1);
+  --animate-backdrop-in: backdrop-in 180ms ease-out;
+  --animate-rise: rise 320ms cubic-bezier(0.2, 0, 0, 1) both;
+  --animate-pop: pop 220ms cubic-bezier(0.2, 0, 0, 1);
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes backdrop-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(0.85);
+    }
+    60% {
+      transform: scale(1.12);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* As variáveis das fontes vêm do next/font (layout raiz). */
+@theme inline {
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-lexend), var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    background: var(--color-bg);
+    color: var(--color-text);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Foco visível consistente em qualquer elemento interativo. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  /* Trava a rolagem do fundo enquanto há um diálogo modal aberto. */
+  body:has(dialog[open]) {
+    overflow: hidden;
+  }
+
+  img {
+    max-width: 100%;
+  }
+}
+
+@layer utilities {
+  /* Texto livre do usuário (links longos, palavras gigantes) quebra dentro do cartão. */
+  .break-anywhere {
+    overflow-wrap: anywhere;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  /* Esconde os controles nativos do input[type=date] mantendo o seletor. */
+  .date-input::-webkit-calendar-picker-indicator {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+  .date-input::-webkit-clear-button,
+  .date-input::-webkit-inner-spin-button {
+    display: none;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
