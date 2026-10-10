@@ -63,28 +63,28 @@ export function formatBRL(value: number | null | undefined): string {
   return typeof value === "number" && Number.isFinite(value) ? BRL.format(value) : "—";
 }
 
-/** "1 EUR = R$ 6,27" — moedas de valor baixo ganham mais casas decimais. */
+/**
+ * "1 EUR = R$ 6,27" — moedas de valor baixo ganham mais casas: abaixo de R$ 0,01 usa 2 dígitos
+ * significativos (0,00028 → "R$ 0,00028"), como o `label` do painel "Sobre o destino".
+ */
 export function formatExchange(
   currencyCode: string | null | undefined,
   rate: number | null | undefined,
 ): string {
   if (!currencyCode || typeof rate !== "number" || !Number.isFinite(rate)) return "—";
   if (currencyCode === "BRL") return formatBRL(1);
-  const digits = rate < 0.1 ? 4 : 2;
-  const value = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: digits,
-  }).format(rate);
+  const options: Intl.NumberFormatOptions =
+    rate > 0 && rate < 0.01
+      ? { maximumSignificantDigits: 2 }
+      : { minimumFractionDigits: 2, maximumFractionDigits: rate < 0.1 ? 4 : 2 };
+  const value = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", ...options }).format(
+    rate,
+  );
   return `1 ${currencyCode} = ${value}`;
 }
 
 /** (20, 20) → "≈ 20 °C" · (25, 30) → "≈ 25 a 30 °C" */
-export function formatTemperature(
-  min: number | null | undefined,
-  max: number | null | undefined,
-): string {
+export function formatTemperature(min: number | null | undefined, max: number | null | undefined): string {
   const hasMin = typeof min === "number" && Number.isFinite(min);
   const hasMax = typeof max === "number" && Number.isFinite(max);
   if (!hasMin && !hasMax) return "—";
@@ -116,5 +116,3 @@ export function transportLabel(value: Transport | null | undefined): string {
 export function companionsLabel(value: Companions | null | undefined): string {
   return COMPANION_OPTIONS.find((o) => o.value === value)?.label ?? "—";
 }
-
-

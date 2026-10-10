@@ -96,21 +96,21 @@ export const EXTERNAL_APIS: ExternalApiInfo[] = [
     name: "Open-Meteo Geocoding",
     purpose: "Autocomplete de destinos: cidade, estado, país e coordenadas.",
     endpoint: "geocoding-api.open-meteo.com/v1/search",
-    cache: "1 dia",
+    cache: "7 d",
     href: "https://open-meteo.com/en/docs/geocoding-api",
   },
   {
     name: "Open-Meteo Forecast",
     purpose: "Temperatura prevista quando o período está nos próximos 16 dias.",
     endpoint: "api.open-meteo.com/v1/forecast",
-    cache: "6 h",
+    cache: "3 h",
     href: "https://open-meteo.com/en/docs",
   },
   {
     name: "Open-Meteo Archive",
     purpose: "Temperatura histórica: as mesmas datas do ano anterior.",
     endpoint: "archive-api.open-meteo.com/v1/archive",
-    cache: "6 h",
+    cache: "30 d",
     href: "https://open-meteo.com/en/docs/historical-weather-api",
   },
   {
@@ -138,14 +138,14 @@ export const EXTERNAL_APIS: ExternalApiInfo[] = [
     name: "Wikipédia (MediaWiki)",
     purpose: "Imagem de capa sugerida do destino (em português e depois em inglês).",
     endpoint: "{pt,en}.wikipedia.org/w/api.php",
-    cache: "1 dia",
+    cache: "7 d",
     href: "https://www.mediawiki.org/wiki/API:Main_page",
   },
   {
     name: "Wikimedia Commons",
     purpose: "Autor e licença da imagem sugerida (atribuição exibida na tela).",
     endpoint: "commons.wikimedia.org/w/api.php",
-    cache: "1 dia",
+    cache: "30 d",
     href: "https://commons.wikimedia.org",
   },
   {
@@ -179,7 +179,7 @@ export const STACK = [
 export const PROTECTIONS = [
   "Timeout de 5 s por chamada e User-Agent identificando o app.",
   "Falha de API externa nunca derruba a rota: o bloco vira null e a tela mostra “Indisponível”.",
-  "Cache em memória com TTL e junção de chamadas simultâneas iguais.",
+  "Cache em duas camadas: memória (por instância, junta chamadas simultâneas iguais) e Data Cache do Next, persistente e compartilhado entre instâncias e deploys. A coluna Cache é a validade nele; só respostas 2xx são guardadas.",
   "Respeita 429 (Too Many Requests): o host entra em pausa pelo Retry-After.",
   "Cotação com cadeia de fallback: AwesomeAPI → ExchangeRate-API → Frankfurter.",
 ] as const;

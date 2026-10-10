@@ -51,7 +51,7 @@ const REQUIREMENTS = [
   {
     icon: Rocket,
     title: "Hospedagem na Vercel",
-    text: "Deploy na Vercel. Na parte 1 os dados ficam em memória no servidor (voltam ao estado inicial quando ele reinicia); na parte 2 entra o PostgreSQL.",
+    text: "Deploy na Vercel. Na parte 1 os dados ficam em memória no servidor: voltam ao estado inicial quando ele reinicia e, na Vercel, cada instância tem a sua própria memória. Na parte 2 entra o PostgreSQL.",
   },
 ] as const;
 
